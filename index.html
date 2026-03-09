@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Client</title>
+</head>
+
+<body>
+    <h1>WebSocket Chat</h1>
+    <div id="messages"></div>
+    <input type="text" id="messageInput" placeholder="Type a message">
+    <button id="sendButton">Send</button>
+    <script>
+        // Step 1: Create a WebSocket connection
+        const socket = new WebSocket('ws://localhost:8080');
+        // Step 2: When the connection is open, log a message
+        socket.onopen = function (event) {
+            console.log('Connected to WebSocket server');
+        };
+        // Step 3: Handle incoming messages from the server
+        socket.onmessage = function (event) {
+            const messagesDiv = document.getElementById('messages');
+            messagesDiv.innerHTML += `<p>Server: ${event.data}</p>`;
+        };
+        // Step 4: Handle any errors that occur
+        socket.onerror = function (error) {
+            console.error('WebSocket Error: ', error);
+        };
+        // Step 5: Handle connection closure
+        socket.onclose = function (event) {
+            console.log('Disconnected from WebSocket server');
+        };
+        // Step 6: Send a message to the server when the "Send" button is clicked
+        const sendButton = document.getElementById('sendButton');
+        sendButton.onclick = function () {
+            const messageInput = document.getElementById('messageInput');
+            const message = messageInput.value;
+            socket.send(message); // Send the message to the server
+            messagesDiv.innerHTML += `<p>You: ${message}</p>`;
+            messageInput.value =
+                ''; // Clear the input field
+        };
+    </script>
+</body>
+
+</html>

@@ -21,9 +21,14 @@
         };
         // Step 3: Handle incoming messages from the server
         socket.onmessage = function (event) {
-            const messagesDiv = document.getElementById('messages');
-            messagesDiv.innerHTML += `<p>Server: ${event.data}</p>`;
-        };
+            const messagesDiv = document.getElementById("messages");
+            if (event.data instanceof Blob) {
+                event.data.text().then(text => {
+                    messagesDiv.innerHTML += `<p>${text}</p>`;
+                });
+            } else {
+                messagesDiv.innerHTML += `<p>${event.data}</p>`;
+            }};
         // Step 4: Handle any errors that occur
         socket.onerror = function (error) {
             console.error('WebSocket Error: ', error);
